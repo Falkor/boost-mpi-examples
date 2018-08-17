@@ -19,6 +19,7 @@ class GpsPosition
 {
 private:
   friend class boost::serialization::access;
+  friend std::ostream& operator<<(std::ostream& os, const GpsPosition & g);
 
   template<class Archive>
   void serialize(Archive & ar, const unsigned int version)
@@ -42,11 +43,12 @@ public:
               int m,
               float s,
               std::string desc
-  ) :
-     degrees(d),
-     minutes(m),
-     seconds(s),
-     desc(desc)
+              ) :
+    degrees(d),
+    minutes(m),
+    seconds(s),
+    desc(desc),
+    extra()
   {}
   inline int getDegrees() { return degrees; }
   inline int getMinutes() { return minutes; }
@@ -55,6 +57,17 @@ public:
   inline void putExtra(std::string extra) { this->extra = extra; }
   inline std::string getExtra() { return extra; }
 };
+
+std::ostream& operator<<(std::ostream& os, const GpsPosition & g) {
+  os <<
+    g.degrees << "D " <<
+    g.minutes << "M " <<
+    g.seconds << "S"  << std::endl <<
+    g.desc    << std::endl;
+  if (! g.extra.empty())
+    os << g.extra << std::endl;
+  return os;
+ }
 
 /* Don't add this if there's string or list. */
 //BOOST_IS_MPI_DATATYPE(GpsPosition)
